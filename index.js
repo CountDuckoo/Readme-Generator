@@ -1,9 +1,8 @@
-// TODO: Include packages needed for this application
+// packages needed for this application
 const inquirer = require('inquirer');
 const generator = require('./generateMarkdown.js');
 const fs = require('fs');
 
-// TODO: Create an array of questions for user input
 // description, table of contents, installation, usage, license, contributing, tests, questions
 // title
 // description
@@ -25,18 +24,29 @@ const questions = [['For all of the following questions, leave it blank if you d
 ];
 
 const licenseChoices = ['Apache License 2.0', 'Boost Software License 1.0', 'GNU General Public License v2.0',
-'GNU General Public License v3.0', 'GNU Affero General Public License v3.0', 'GNU Lesser General Public License v3.0', 'MIT', 'ISC',
-'Mozilla Public License 2.0', 'The Unlicense', 'Creative Commons Zero v1.0 Universal', 'Creative Commons Attribution 4.0',
+'GNU General Public License v3.0', 'GNU Affero General Public License v3.0', 'GNU Lesser General Public License v3.0', 'MIT License',
+'ISC License', 'Mozilla Public License 2.0', 'The Unlicense', 'Creative Commons Zero v1.0 Universal', 'Creative Commons Attribution 4.0',
 'Creative Commons Attribution ShareAlike 4.0', 'SIL Open Font License 1.1', 'None'];
 
-// TODO: Create a function to write README file
+// a function to write README file
 function writeToFile(fileName, data) {
     const markdown = generator.generateMarkdown(data);
     console.log(markdown);
-    //fs.writeFile(fileName, markdown, (err) => err ? console.error(err) : console.log("Successfully created Readme File."));
+    inquirer.prompt({
+        type: 'confirm',
+        name: 'good',
+        message: 'Does the presented markdown look good? If no, the process will restart.'
+    })
+    .then(({good}) =>{
+        if(good){
+            fs.writeFile(fileName, markdown, (err) => err ? console.error(err) : console.log("Successfully created Readme File."));
+        } else {
+            init();
+        }
+    });
 }
 
-// TODO: Create a function to initialize app
+// a function to initialize app, including the prompts
 function init() {
     const questionPrompts=[];
     questions.forEach(question => {
